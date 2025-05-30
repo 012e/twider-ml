@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from app.api import router as api_router
 from app.config import settings
 from events import NATSConsumer
+from processing.post import handle_post_created
 
 # Configure logging
 logging.basicConfig(level=getattr(logging, settings.log_level.upper()))
@@ -18,12 +19,20 @@ consumer: NATSConsumer | None = None
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     global consumer
     logger.info("Starting ML Search Service...")
 
-    # Initialize and start NATS consumer
-    consumer = NATSConsumer()
+    # Initialize and start NATS consumer with all required parameters
+    consumer = NATSConsumer(
+        message_handler=handle_post_created,
+        nats_url=settings.nats_url,
+        stream_name="twider-stream",
+        subject="post.created.*",
+        durable_name="twider-durable-subscription",
+        batch_size=10,
+        timeout=1.0
+    )
     task = asyncio.create_task(consumer.run())
     logger.info("NATS consumer task started")
 

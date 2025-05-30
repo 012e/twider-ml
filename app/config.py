@@ -9,11 +9,6 @@ class Settings(BaseModel):
     
     # NATS settings
     nats_url: str = "localhost"
-    nats_stream_name: str = "twider-stream"
-    nats_subject: str = "post.created.*"
-    nats_durable_name: str = "twider-durable-subscription"
-    nats_batch_size: int = 10
-    nats_timeout: float = 1.0
     
     # Vector settings
     dense_vector_name: str = "dense"

@@ -1,12 +1,10 @@
 import asyncio
 import logging
-from typing import Optional
+from typing import Optional, Callable, Awaitable, List
 
 import nats
+from nats.aio.msg import Msg
 from nats.js import JetStreamContext
-
-from app.config import settings
-from processing.post import handle_post_created
 
 logger = logging.getLogger(__name__)
 
@@ -14,13 +12,23 @@ logger = logging.getLogger(__name__)
 class NATSConsumer:
     """NATS JetStream consumer for handling post events."""
     
-    def __init__(self):
-        self.nats_url = settings.nats_url
-        self.stream_name = settings.nats_stream_name
-        self.subject = settings.nats_subject
-        self.durable_name = settings.nats_durable_name
-        self.batch_size = settings.nats_batch_size
-        self.timeout = settings.nats_timeout
+    def __init__(
+        self, 
+        message_handler: Callable[[list[Msg]], Awaitable[None]],
+        nats_url: str,
+        stream_name: str,
+        subject: str,
+        durable_name: str,
+        batch_size: int,
+        timeout: float
+    ):
+        self.nats_url = nats_url
+        self.stream_name = stream_name
+        self.subject = subject
+        self.durable_name = durable_name
+        self.batch_size = batch_size
+        self.timeout = timeout
+        self.message_handler = message_handler
         
         self._nc: Optional[nats.NATS] = None
         self._js: Optional[JetStreamContext] = None
@@ -70,7 +78,7 @@ class NATSConsumer:
                     msgs = await psub.fetch(self.batch_size, timeout=self.timeout)
                     if msgs:
                         logger.info(f"Received {len(msgs)} NATS messages")
-                        await handle_post_created(msgs)
+                        await self.message_handler(msgs)
                         for msg in msgs:
                             await msg.ack()
                     
