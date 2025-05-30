@@ -11,5 +11,3 @@ dependencies = [
     "qdrant-client[fastembed]>=1.14.2",
     "uvicorn>=0.34.2",
 ]
-[tool.basedpyright]
-typeCheckingMode = "standard"

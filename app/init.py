@@ -1,5 +1,5 @@
 from qdrant_client.models import models
-from qdrant.client import app_qdrant
+from app.client import app_qdrant
 
 
 dense_vector_name = "dense"

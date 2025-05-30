@@ -1,6 +1,6 @@
 from qdrant_client import models
 
-from lib.qdrant.client import qdrant_client
+from .client import app_qdrant
 
 class HybridSearcher:
     DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
@@ -8,7 +8,7 @@ class HybridSearcher:
     
     def __init__(self, collection_name):
         self.collection_name = collection_name
-        self.qdrant_client = qdrant_client
+        self.qdrant_client =app_qdrant
 
     def search(self, text: str, offset: int = 0, limit: int = 10):
         search_result = self.qdrant_client.query_points(

@@ -5,8 +5,8 @@ from nats.aio.msg import Msg
 from pydantic import BaseModel
 from qdrant_client import models
 
-from qdrant.client import app_qdrant
-from qdrant.init import (
+from app.client import app_qdrant
+from app.init import (
     dense_model_name,
     dense_vector_name,
     sparse_model_name,
