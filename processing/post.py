@@ -6,12 +6,7 @@ from pydantic import BaseModel
 from qdrant_client import models
 
 from app.client import app_qdrant
-from app.init import (
-    dense_model_name,
-    dense_vector_name,
-    sparse_model_name,
-    sparse_vector_name,
-)
+from app.config import settings
 from utils.pydantic_generators import to_pascal_case
 
 
@@ -30,14 +25,14 @@ async def handle_post_created(msgs: list[Msg]):
     data = [PostCreatedEvent.model_validate_json(msg.data) for msg in msgs]
     points = []
     for datum in data:
-        dense_document = models.Document(text=datum.content, model=dense_model_name)
-        sparse_document = models.Document(text=datum.content, model=sparse_model_name)
+        dense_document = models.Document(text=datum.content, model=settings.dense_model_name)
+        sparse_document = models.Document(text=datum.content, model=settings.sparse_model_name)
         points.append(
             models.PointStruct(
                 id=str(datum.id),
                 vector={
-                    dense_vector_name: dense_document,
-                    sparse_vector_name: sparse_document,
+                    settings.dense_vector_name: dense_document,
+                    settings.sparse_vector_name: sparse_document,
                 },
                 payload={
                     "content": datum.content,
@@ -47,4 +42,4 @@ async def handle_post_created(msgs: list[Msg]):
         )
     print(f"Upserting {len(points)} points to Qdrant")
 
-    app_qdrant.upsert(collection_name="posts", points=points)
+    app_qdrant.upsert(collection_name=settings.posts_collection_name, points=points)

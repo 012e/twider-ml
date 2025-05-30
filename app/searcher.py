@@ -1,14 +1,12 @@
 from qdrant_client import models
 
 from .client import app_qdrant
+from .config import settings
 
 class HybridSearcher:
-    DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-    SPARSE_MODEL = "prithivida/Splade_PP_en_v1"
-    
-    def __init__(self, collection_name):
-        self.collection_name = collection_name
-        self.qdrant_client =app_qdrant
+    def __init__(self, collection_name: str = None):
+        self.collection_name = collection_name or settings.posts_collection_name
+        self.qdrant_client = app_qdrant
 
     def search(self, text: str, offset: int = 0, limit: int = 10):
         search_result = self.qdrant_client.query_points(
@@ -18,12 +16,12 @@ class HybridSearcher:
             ),
             prefetch=[
                 models.Prefetch(
-                    query=models.Document(text=text, model=self.DENSE_MODEL),
-                    using="dense"
+                    query=models.Document(text=text, model=settings.dense_model_name),
+                    using=settings.dense_vector_name
                 ),
                 models.Prefetch(
-                    query=models.Document(text=text, model=self.SPARSE_MODEL),
-                    using="sparse"
+                    query=models.Document(text=text, model=settings.sparse_model_name),
+                    using=settings.sparse_vector_name
                 ),
             ],
             query_filter=None,
