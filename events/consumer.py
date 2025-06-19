@@ -1,8 +1,9 @@
 import asyncio
 import logging
-from typing import Optional, Callable, Awaitable, List
+from typing import Optional, Callable, Awaitable
 
 import nats
+from nats.aio.client import Client
 from nats.aio.msg import Msg
 from nats.js import JetStreamContext
 
@@ -30,8 +31,8 @@ class NATSConsumer:
         self.timeout = timeout
         self.message_handler = message_handler
         
-        self._nc: Optional[nats.NATS] = None
-        self._js: Optional[JetStreamContext] = None
+        self._nc: Client | None = None
+        self._js: JetStreamContext | None = None
         self._running = False
 
     async def connect(self) -> None:

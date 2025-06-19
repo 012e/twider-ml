@@ -7,6 +7,7 @@ from fastapi import FastAPI
 
 from app.api import router as api_router
 from app.config import settings
+from app.init import create_collections_if_not_exists
 from events import NATSConsumer
 from processing.post import handle_post_created
 
@@ -31,7 +32,7 @@ async def lifespan(_app: FastAPI):
         subject="post.created.*",
         durable_name="twider-durable-subscription",
         batch_size=10,
-        timeout=1.0
+        timeout=1.0,
     )
     task = asyncio.create_task(consumer.run())
     logger.info("NATS consumer task started")
@@ -62,6 +63,7 @@ async def root():
 
 
 if __name__ == "__main__":
+    create_collections_if_not_exists()
     uvicorn.run(
         app,
         host=settings.api_host,

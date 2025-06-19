@@ -13,7 +13,7 @@ from utils.pydantic_generators import to_pascal_case
 class PostCreatedEvent(BaseModel):
     id: UUID
     content: str
-    media_urls: List[UUID]
+    media_urls: list[str]
 
     model_config = {
         "alias_generator": to_pascal_case,
