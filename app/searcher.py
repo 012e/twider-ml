@@ -16,12 +16,12 @@ class HybridSearcher:
             ),
             prefetch=[
                 models.Prefetch(
-                    query=models.Document(text=text, model=settings.dense_model_name),
-                    using=settings.dense_vector_name
+                    query=models.Document(text=text, model=settings.content_dense_model_name),
+                    using=settings.content_dense_vector_name
                 ),
                 models.Prefetch(
-                    query=models.Document(text=text, model=settings.sparse_model_name),
-                    using=settings.sparse_vector_name
+                    query=models.Document(text=text, model=settings.content_sparse_model_name),
+                    using=settings.content_sparse_vector_name
                 ),
             ],
             query_filter=None,

@@ -25,14 +25,14 @@ async def handle_post_created(msgs: list[Msg]):
     data = [PostCreatedEvent.model_validate_json(msg.data) for msg in msgs]
     points = []
     for datum in data:
-        dense_document = models.Document(text=datum.content, model=settings.dense_model_name)
-        sparse_document = models.Document(text=datum.content, model=settings.sparse_model_name)
+        content_dense_embedding = models.Document(text=datum.content, model=settings.content_dense_model_name)
+        content_sparse_embedding = models.Document(text=datum.content, model=settings.content_sparse_model_name)
         points.append(
             models.PointStruct(
                 id=str(datum.id),
                 vector={
-                    settings.dense_vector_name: dense_document,
-                    settings.sparse_vector_name: sparse_document,
+                    settings.content_dense_vector_name: content_dense_embedding,
+                    settings.content_sparse_vector_name: content_sparse_embedding,
                 },
                 payload={
                     "content": datum.content,

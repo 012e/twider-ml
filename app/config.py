@@ -11,10 +11,10 @@ class Settings(BaseModel):
     nats_url: str = "localhost"
     
     # Vector settings
-    dense_vector_name: str = "dense"
-    sparse_vector_name: str = "sparse"
-    dense_model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
-    sparse_model_name: str = "prithivida/Splade_PP_en_v1"
+    content_dense_vector_name: str = "dense"
+    content_sparse_vector_name: str = "sparse"
+    content_dense_model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+    content_sparse_model_name: str = "prithivida/Splade_PP_en_v1"
     
     # Collection settings
     posts_collection_name: str = "posts"

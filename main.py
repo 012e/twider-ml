@@ -63,7 +63,6 @@ async def root():
 
 
 if __name__ == "__main__":
-    create_collections_if_not_exists()
     uvicorn.run(
         app,
         host=settings.api_host,
